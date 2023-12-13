@@ -33,7 +33,7 @@ Russian Mario - это платформер для любителей класс
 
 
 **Технологические стек**:
-- Python 9.10
+- Python 9.11
 - PyGame
 
 ## Порядок запуска приложения
@@ -58,9 +58,10 @@ pyinstaller --onefile --noconsole --name RussianMario main.py
 - Пока не определились
 
 ### Изображения:
-- Пока не определились
+- Kenney Platformer Art Deluxe с открытой лицензией Creative Commons \
+ https://kenney.nl/assets/platformer-art-deluxe
 
-## Авторы проекта
+## Автор проекта
 
 ### Струков Леонид Евгентевич ([Leostrykov](https://github.com/Leostrykov))
 Бекенд, фронтенд разработка, тим-лид, шарит в дизайне и нейросетях, администратор репозитория
