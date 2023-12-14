@@ -63,7 +63,7 @@ pyinstaller --onefile --noconsole --name RussianMario main.py
 
 ## Автор проекта
 
-### Струков Леонид Евгентевич ([Leostrykov](https://github.com/Leostrykov))
+### Струков Леонид Евгеньевич ([Leostrykov](https://github.com/Leostrykov))
 Бекенд, фронтенд разработка, тим-лид, шарит в дизайне и нейросетях, администратор репозитория
 
 ### Баранников Егор Евгеньевич ([xstaf](https://github.com/xstaf))
