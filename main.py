@@ -12,10 +12,7 @@ screen_height = 1000
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Russian Mario')
 
-tile_size = int(screen_width / 20)
-adapted_size = 1 - ((1000 - screen_width) / 1000)
-if adapted_size == 0:
-    adapted_size = 1
+tile_size = 50
 
 background = pygame.image.load('img/sky.png')
 
@@ -27,12 +24,12 @@ class Player:
         self.counter = 0
         image_walk_1 = pygame.image.load('extra/Alien sprites/alienPink_walk1.png')
         image_walk_2 = pygame.image.load('extra/Alien sprites/alienPink_walk2.png')
-        self.image_walk_1 = pygame.transform.scale(image_walk_1, (40 * adapted_size, 80 * adapted_size))
-        self.image_walk_2 = pygame.transform.scale(image_walk_2, (40 * adapted_size, 80 * adapted_size))
+        self.image_walk_1 = pygame.transform.scale(image_walk_1, (40, 80))
+        self.image_walk_2 = pygame.transform.scale(image_walk_2, (40, 80))
         self.images_walk.append(self.image_walk_1)
         self.images_walk.append(self.image_walk_2)
         image = pygame.image.load('extra/Alien sprites/alienPink_stand.png')
-        self.image = pygame.transform.scale(image, (40 * adapted_size, 80 * adapted_size))
+        self.image = pygame.transform.scale(image, (40, 80))
 
         self.image_all = self.images_walk[self.index]
 
