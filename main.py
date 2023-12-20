@@ -3,7 +3,6 @@ from pygame.locals import *
 
 pygame.init()
 
-
 clock = pygame.time.Clock()
 fraps = 60
 
@@ -13,25 +12,27 @@ screen_height = 1000
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Russian Mario')
 
-tile_size = 50
-
+tile_size = int(screen_width / 20)
+adapted_size = 1 - ((1000 - screen_width) / 1000)
+if adapted_size == 0:
+    adapted_size = 1
 
 background = pygame.image.load('img/sky.png')
 
 
-class Player():
+class Player:
     def __init__(self, x, y):
         self.images_walk = []
         self.index = 0
         self.counter = 0
         image_walk_1 = pygame.image.load('extra/Alien sprites/alienPink_walk1.png')
         image_walk_2 = pygame.image.load('extra/Alien sprites/alienPink_walk2.png')
-        self.image_walk_1 = pygame.transform.scale(image_walk_1, (40, 80))
-        self.image_walk_2 = pygame.transform.scale(image_walk_2, (40, 80))
+        self.image_walk_1 = pygame.transform.scale(image_walk_1, (40 * adapted_size, 80 * adapted_size))
+        self.image_walk_2 = pygame.transform.scale(image_walk_2, (40 * adapted_size, 80 * adapted_size))
         self.images_walk.append(self.image_walk_1)
         self.images_walk.append(self.image_walk_2)
         image = pygame.image.load('extra/Alien sprites/alienPink_stand.png')
-        self.image = pygame.transform.scale(image, (40, 80))
+        self.image = pygame.transform.scale(image, (40 * adapted_size, 80 * adapted_size))
 
         self.image_all = self.images_walk[self.index]
 
@@ -46,22 +47,19 @@ class Player():
         new_x = 0
         new_y = 0
         key = pygame.key.get_pressed()
-        if key[pygame.K_UP] and self.jumped == False:
+        if key[pygame.K_UP] and self.jumped is False:
             self.vel_y = -15
             self.jumped = True
-        if key[pygame.K_UP] == False:
+        if key[pygame.K_UP] is False:
             self.jumped = False
         if key[pygame.K_LEFT]:
             new_x -= 5
         if key[pygame.K_RIGHT]:
             new_x += 5
-
-
         self.index += 1
         if self.index >= len(self.images_walk):
             self.index = 0
         self.image_all = self.images_walk[self.index]
-
 
         self.vel_y += 1
         if self.vel_y > 10:
@@ -73,12 +71,11 @@ class Player():
 
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
-            new_y = 0
 
         screen.blit(self.image, self.rect)
 
 
-class World():
+class World:
     def __init__(self, data):
         self.tile_list = []
 
@@ -120,28 +117,27 @@ class World():
 
 
 world = [
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1]
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1]
 ]
-
 
 player = Player(100, screen_height - 130)
 world = World(world)
@@ -155,7 +151,6 @@ while run:
 
     world.draw()
     player.update()
-
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
