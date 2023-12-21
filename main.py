@@ -1,43 +1,28 @@
 import pygame
 from pygame.locals import *
-
-pygame.init()
-
-
-clock = pygame.time.Clock()
-fraps = 60
-
-screen_width = 1000
-screen_height = 1000
-
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Russian Mario')
-
-tile_size = 50
+from Tiles import tiles, tiles_name
 
 
-background = pygame.image.load('img/sky.png')
-
-
-class Player():
-    def __init__(self, x, y):
+class Player(pygame.sprite.Sprite):
+    def __init__(self, x, y, *group):
+        super().__init__(*group)
         self.images_walk = []
         self.index = 0
-        self.counter = 0
-        image_walk_1 = pygame.image.load('extra/Alien sprites/alienPink_walk1.png')
-        image_walk_2 = pygame.image.load('extra/Alien sprites/alienPink_walk2.png')
-        self.image_walk_1 = pygame.transform.scale(image_walk_1, (40, 80))
-        self.image_walk_2 = pygame.transform.scale(image_walk_2, (40, 80))
-        self.images_walk.append(self.image_walk_1)
-        self.images_walk.append(self.image_walk_2)
-        image = pygame.image.load('extra/Alien sprites/alienPink_stand.png')
-        self.image = pygame.transform.scale(image, (40, 80))
+        # Загрузка картинок ходьбы
+        image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
+        image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
 
-        self.image_all = self.images_walk[self.index]
+        image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0001.png')
+        image_walk_2 = pygame.transform.scale(image_walk_2, (60, 60))
+        self.images_walk.append(image_walk_1)
+        self.images_walk.append(image_walk_2)
+        self.image = self.images_walk[0]
 
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.width = self.image.get_width()
+        self.height = self.image.get_height()
         self.vel_y = 0
         self.jumped = False
 
@@ -46,120 +31,143 @@ class Player():
         new_x = 0
         new_y = 0
         key = pygame.key.get_pressed()
-        if key[pygame.K_UP] and self.jumped == False:
+        if key[pygame.K_UP] and self.jumped is False:
             self.vel_y = -15
             self.jumped = True
-        if key[pygame.K_UP] == False:
+        if key[pygame.K_UP] is False:
             self.jumped = False
         if key[pygame.K_LEFT]:
             new_x -= 5
+            self.image = pygame.transform.flip(self.images_walk[self.index], False, False)
         if key[pygame.K_RIGHT]:
             new_x += 5
-
-
+            self.image = pygame.transform.flip(self.images_walk[self.index], True, False)
         self.index += 1
         if self.index >= len(self.images_walk):
             self.index = 0
-        self.image_all = self.images_walk[self.index]
-
 
         self.vel_y += 1
         if self.vel_y > 10:
             self.vel_y = 10
         new_y += self.vel_y
 
+        for tile in world.tile_list:
+            if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height):
+                new_x = 0
+
+
+            if tile[1].colliderect(self.rect.x , self.rect.y + new_y, self.width, self.height):
+                if self.vel_y < 0:
+                    new_y = tile[1].bottom - self.rect.top
+                    self.vel_y = 0
+                elif self.vel_y >= 0:
+                    new_y = tile[1].top - self.rect.bottom
+                    self.vel_y = 0
+
         self.rect.x += new_x
         self.rect.y += new_y
 
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
-            new_y = 0
 
         screen.blit(self.image, self.rect)
+        #pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
-
-class World():
+class World:
     def __init__(self, data):
-        self.tile_list = []
-
-        snow = pygame.image.load('ice/Tiles/tundraMid.png')
-        candy = pygame.image.load('candy/Tiles/cake.png')
-        snow_center = pygame.image.load('ice/Tiles/tundraCenter.png')
-
         row_count = 0
-        for row in data:
-            count = 0
-            for tile in row:
-                if tile == 1:
-                    img = pygame.transform.scale(snow_center, (tile_size, tile_size))
+        self.tile_list = []
+        for row_count, row in enumerate(data):
+            col_count = 0
+            for count, tile in enumerate(row):
+                if tile - 1 <= len(tiles_name) and tile != 0 and tile != 4:
+                    img = pygame.transform.scale(tiles[tiles_name[tile - 1]], (tile_size, tile_size))
                     rect = img.get_rect()
                     rect.x = count * tile_size
                     rect.y = row_count * tile_size
                     tile = (img, rect)
                     self.tile_list.append(tile)
-                if tile == 2:
-                    img = pygame.transform.scale(candy, (tile_size, tile_size))
-                    rect = img.get_rect()
-                    rect.x = count * tile_size
-                    rect.y = row_count * tile_size
-                    tile = (img, rect)
-                    self.tile_list.append(tile)
-                if tile == 3:
-                    img = pygame.transform.scale(snow, (tile_size, tile_size))
-                    rect = img.get_rect()
-                    rect.x = count * tile_size
-                    rect.y = row_count * tile_size
-                    tile = (img, rect)
-                    self.tile_list.append(tile)
-                count += 1
-            row_count += 1
-
+                if tile == 4:
+                    enemy = Enemy(400, row_count * tile_size)
+                    enemy_group.add(enemy)
+            col_count += 1
+        row_count += 1
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
+            #pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
+
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load('img/Tiles/Characters/tile_0015.png')
+        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 world = [
-[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
-[1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 1]
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 3]
 ]
 
-
-player = Player(100, screen_height - 130)
-world = World(world)
-
-run = True
-while run:
-
-    clock.tick(fraps)
-
-    screen.blit(background, (0, 0))
-
-    world.draw()
-    player.update()
+enemy_group = pygame.sprite.Group()
 
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            run = False
+if __name__ == '__main__':
+    pygame.init()
 
-    pygame.display.update()
-pygame.quit()
+    clock = pygame.time.Clock()
+    fraps = 60
+
+    screen_width = 600
+    screen_height = 600
+
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption('Russian Mario')
+
+    # размер одного блока (клеточки)
+    tile_size = 30
+    all_sprites = pygame.sprite.Group()
+    player = Player(100, screen_height - 130, all_sprites)
+    world = World(world)
+
+    #enemy_group = pygame.sprite.Group()
+    run = True
+
+    while run:
+        screen.fill(pygame.Color((0, 246, 245)))
+        clock.tick(fraps)
+        all_sprites.draw(screen)
+        all_sprites.update()
+        world.draw()
+
+        enemy_group.draw(screen)
+
+        player.update()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                run = False
+
+        pygame.display.update()
+    pygame.quit()
