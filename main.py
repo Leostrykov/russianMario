@@ -10,14 +10,13 @@ class Player(pygame.sprite.Sprite):
         self.index = 0
         # Загрузка картинок ходьбы
         image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
-        image_walk_1 = pygame.transform.scale(image_walk_1, (40, 40))
+        image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
 
         image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0001.png')
-        image_walk_2 = pygame.transform.scale(image_walk_2, (40, 40))
+        image_walk_2 = pygame.transform.scale(image_walk_2, (60, 60))
         self.images_walk.append(image_walk_1)
         self.images_walk.append(image_walk_2)
-        image = self.images_walk[0]
-        self.image = pygame.transform.scale(image, (40, 40))
+        self.image = self.images_walk[0]
 
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -63,9 +62,9 @@ class World:
     def __init__(self, data):
         row_count = 0
         self.tile_list = []
-        for row in data:
+        for row_count, row in enumerate(data):
             count = 0
-            for tile in row:
+            for count, tile in enumerate(row):
                 if tile - 1 <= len(tiles_name) and tile != 0:
                     img = pygame.transform.scale(tiles[tiles_name[tile - 1]], (tile_size, tile_size))
                     rect = img.get_rect()
@@ -73,8 +72,6 @@ class World:
                     rect.y = row_count * tile_size
                     tile = (img, rect)
                     self.tile_list.append(tile)
-                    count += 1
-            row_count += 1
 
     def draw(self):
         for tile in self.tile_list:
@@ -101,7 +98,7 @@ world = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3]
+    [0, 0, 0, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3]
 ]
 
 if __name__ == '__main__':
