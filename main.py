@@ -27,6 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.jumped = False
 
     def update(self):
+        global game_over
 
         new_x = 0
         new_y = 0
@@ -193,17 +194,16 @@ if __name__ == '__main__':
     run = True
 
     while run:
-        screen.fill(pygame.Color((0, 246, 245)))
         clock.tick(fraps)
-        all_sprites.draw(screen)
-        all_sprites.update()
-        world.draw()
+        if game_over == 1:
+            screen.fill(pygame.Color((0, 246, 245)))
+            all_sprites.draw(screen)
+            all_sprites.update()
+            world.draw()
 
-        enemy_group.update()
-        enemy_group.draw(screen)
-        lava_group.draw(screen)
-
-        player.update()
+            enemy_group.update()
+            enemy_group.draw(screen)
+            lava_group.draw(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
