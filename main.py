@@ -8,6 +8,9 @@ class Player(pygame.sprite.Sprite):
         super().__init__(*group)
         self.images_walk = []
         self.index = 0
+        self.animation_speed = 10  # Скорость анимации
+        self.animation_count = 0  # Счётчик анимации
+
         # Загрузка картинок ходьбы
         image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
         image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
@@ -24,28 +27,37 @@ class Player(pygame.sprite.Sprite):
         self.width = self.image.get_width()
         self.height = self.image.get_height()
         self.vel_y = 0
+
         self.jumped = False
+        self.jumped_count = 0
 
     def update(self):
-
         new_x = 0
         new_y = 0
-
         key = pygame.key.get_pressed()
         if key[pygame.K_UP] and self.jumped is False:
-            self.vel_y = -15
-            self.jumped = True
+            if self.jumped_count != 2:
+                self.vel_y = -15
+                self.jumped = True
+                self.jumped_count += 1
+            else:
+                self.jumped = False
         if key[pygame.K_UP] is False:
             self.jumped = False
         if key[pygame.K_LEFT]:
             new_x -= 5
-            self.image = pygame.transform.flip(self.images_walk[self.index], False, False)
+            self.animation_count += 1
+            if self.animation_count >= self.animation_speed:
+                self.animation_count = 0
+                self.index += 1
+                self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], False, False)
         if key[pygame.K_RIGHT]:
             new_x += 5
-            self.image = pygame.transform.flip(self.images_walk[self.index], True, False)
-        self.index += 1
-        if self.index >= len(self.images_walk):
-            self.index = 0
+            self.animation_count += 1
+            if self.animation_count >= self.animation_speed:
+                self.animation_count = 0
+                self.index += 1
+                self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], True, False)
 
         self.vel_y += 1
         if self.vel_y > 10:
@@ -56,8 +68,10 @@ class Player(pygame.sprite.Sprite):
             if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height):
                 new_x = 0
 
+            if tile[1].colliderect(self.rect.x, self.rect.y + new_y, self.width, self.height):
+                if self.jumped_count == 2:
+                    self.jumped_count = 0
 
-            if tile[1].colliderect(self.rect.x , self.rect.y + new_y, self.width, self.height):
                 if self.vel_y < 0:
                     new_y = tile[1].bottom - self.rect.top
                     self.vel_y = 0
@@ -77,13 +91,9 @@ class Player(pygame.sprite.Sprite):
 
         if self.rect.bottom > screen_height:
             self.rect.bottom = screen_height
-            new_y = 0
-
 
         screen.blit(self.image, self.rect)
-        pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
-
-
+        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 
 class World:
@@ -108,10 +118,11 @@ class World:
                     lava_group.add(lava)
             col_count += 1
         row_count += 1
+
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
-            pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
+            # pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -132,6 +143,7 @@ class Enemy(pygame.sprite.Sprite):
             self.move_direct *= -1
             self.counter *= -1
 
+
 class Lava(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
@@ -140,6 +152,7 @@ class Lava(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+
 
 
 
@@ -157,18 +170,17 @@ world = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 3, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 3]
 ]
 
 enemy_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
-
 
 if __name__ == '__main__':
     pygame.init()
@@ -184,12 +196,11 @@ if __name__ == '__main__':
 
     # размер одного блока (клеточки)
     tile_size = 30
-    game_over = 1
     all_sprites = pygame.sprite.Group()
     player = Player(100, screen_height - 130, all_sprites)
     world = World(world)
 
-    #enemy_group = pygame.sprite.Group()
+    # enemy_group = pygame.sprite.Group()
     run = True
 
     while run:

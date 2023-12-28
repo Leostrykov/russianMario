@@ -7,7 +7,7 @@ tiles = {
     'ground_end': pygame.image.load('img/Tiles/tile_0003.png'),   #3
     'pass': (''), #4-блок для врага
     'ground_underground': pygame.image.load('img/Tiles/tile_0006.png'), #5
-    #'water': pygame.image.load('img/Tiles/tile_0053.png'), #6
+    'water': pygame.image.load('img/Tiles/tile_0053.png'), #6
 }
 # получение списка ключей словаря tiles
 tiles_name = list(tiles.keys())
