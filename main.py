@@ -42,8 +42,11 @@ class Player(pygame.sprite.Sprite):
         self.jumped_count = 0
 
     def update(self):
+        global game_over
+
         new_x = 0
         new_y = 0
+
         key = pygame.key.get_pressed()
         k_left = None
         k_right = None
@@ -79,6 +82,8 @@ class Player(pygame.sprite.Sprite):
                 self.animation_count = 0
                 self.index += 1
                 self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], True, False)
+        if self.index >= len(self.images_walk):
+            self.index = 0
 
         self.vel_y += 1
         if self.vel_y > 10:
@@ -100,6 +105,13 @@ class Player(pygame.sprite.Sprite):
                     new_y = tile[1].top - self.rect.bottom
                     self.vel_y = 0
 
+        if pygame.sprite.spritecollide(self, enemy_group, False):
+            game_over = -1
+            print('enemy')
+        if pygame.sprite.spritecollide(self, lava_group, False):
+            game_over = -1
+            print('lava')
+
         self.rect.x += new_x
         self.rect.y += new_y
 
@@ -117,7 +129,7 @@ class World:
         for row_count, row in enumerate(data):
             col_count = 0
             for count, tile in enumerate(row):
-                if tile - 1 <= len(tiles_name) and tile != 0 and tile != 4:
+                if tile - 1 <= len(tiles_name) and tile != 0 and tile != 4 and tile != 6:
                     img = pygame.transform.scale(tiles[tiles_name[tile - 1]], (tile_size, tile_size))
                     rect = img.get_rect()
                     rect.x = count * tile_size
@@ -125,8 +137,11 @@ class World:
                     tile = (img, rect)
                     self.tile_list.append(tile)
                 if tile == 4:
-                    enemy = Enemy(400, row_count * tile_size)
+                    enemy = Enemy(count * tile_size, row_count * tile_size - 10)
                     enemy_group.add(enemy)
+                if tile == 6:
+                    lava = Lava(count * tile_size, row_count * tile_size)
+                    lava_group.add(lava)
             col_count += 1
         row_count += 1
 
@@ -144,6 +159,25 @@ class Enemy(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
+        self.move_direct = 1
+        self.counter = 0
+
+    def update(self):
+        self.rect.x += self.move_direct
+        self.counter += 1
+        if abs(self.counter) > 30:
+            self.move_direct *= -1
+            self.counter *= -1
+
+
+class Lava(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        img = pygame.image.load('img/Tiles/tile_0053.png')
+        self.image = pygame.transform.scale(img, (tile_size, tile_size // 2))
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
 
 
 world = [
@@ -158,8 +192,8 @@ world = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 3, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -170,6 +204,7 @@ world = [
 ]
 
 enemy_group = pygame.sprite.Group()
+lava_group = pygame.sprite.Group()
 
 
 if __name__ == '__main__':
@@ -186,6 +221,7 @@ if __name__ == '__main__':
 
     # размер одного блока (клеточки)
     tile_size = 30
+    game_over = 1
     all_sprites = pygame.sprite.Group()
     player_1 = Player(100, screen_height - 130, 0, all_sprites)
     player_2 = Player(300, screen_height - 130, 1, all_sprites)
@@ -195,13 +231,16 @@ if __name__ == '__main__':
     run = True
 
     while run:
-        screen.fill(pygame.Color((0, 246, 245)))
         clock.tick(fraps)
-        all_sprites.draw(screen)
-        all_sprites.update()
-        world.draw()
+        if game_over == 1:
+            screen.fill(pygame.Color((0, 246, 245)))
+            all_sprites.draw(screen)
+            all_sprites.update()
+            world.draw()
 
-        enemy_group.draw(screen)
+            enemy_group.update()
+            enemy_group.draw(screen)
+            lava_group.draw(screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
