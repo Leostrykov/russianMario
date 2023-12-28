@@ -58,8 +58,8 @@ pyinstaller --onefile --noconsole --name RussianMario main.py
 - Пока не определились
 
 ### Изображения:
-- Kenney Platformer Art Deluxe с открытой лицензией Creative Commons \
- https://kenney.nl/assets/platformer-art-deluxe
+- Kenney Pixel Platformer с открытой лицензией Creative Commons \
+ [https://kenney.nl/assets/platformer-art-deluxe](https://kenney.nl/assets/pixel-platformer)
 
 ## Автор проекта
 
