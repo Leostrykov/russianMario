@@ -3,6 +3,8 @@ from pygame.locals import *
 from Tiles import tiles, tiles_name
 
 
+game_over = 0
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *group):
         super().__init__(*group)
@@ -21,6 +23,9 @@ class Player(pygame.sprite.Sprite):
         self.images_walk.append(image_walk_2)
         self.image = self.images_walk[0]
 
+        self.dead_img = pygame.image.load('img/ghost.png')
+        self.dead_img = pygame.transform.scale(self.dead_img, (40, 40))
+
         self.rect = self.image.get_rect()
         self.rect.x = x
         self.rect.y = y
@@ -32,65 +37,75 @@ class Player(pygame.sprite.Sprite):
         self.jumped_count = 0
 
     def update(self):
-        new_x = 0
-        new_y = 0
-        key = pygame.key.get_pressed()
-        if key[pygame.K_UP] and self.jumped is False:
-            if self.jumped_count != 2:
-                self.vel_y = -15
-                self.jumped = True
-                self.jumped_count += 1
-            else:
+
+        global game_over
+
+        if game_over == 0:
+            new_x = 0
+            new_y = 0
+            key = pygame.key.get_pressed()
+            if key[pygame.K_UP] and self.jumped is False:
+                if self.jumped_count != 2:
+                    self.vel_y = -15
+                    self.jumped = True
+                    self.jumped_count += 1
+                else:
+                    self.jumped = False
+            if key[pygame.K_UP] is False:
                 self.jumped = False
-        if key[pygame.K_UP] is False:
-            self.jumped = False
-        if key[pygame.K_LEFT]:
-            new_x -= 5
-            self.animation_count += 1
-            if self.animation_count >= self.animation_speed:
-                self.animation_count = 0
-                self.index += 1
-                self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], False, False)
-        if key[pygame.K_RIGHT]:
-            new_x += 5
-            self.animation_count += 1
-            if self.animation_count >= self.animation_speed:
-                self.animation_count = 0
-                self.index += 1
-                self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], True, False)
+            if key[pygame.K_LEFT]:
+                new_x -= 5
+                self.animation_count += 1
+                if self.animation_count >= self.animation_speed:
+                    self.animation_count = 0
+                    self.index += 1
+                    self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], False, False)
+            if key[pygame.K_RIGHT]:
+                new_x += 5
+                self.animation_count += 1
+                if self.animation_count >= self.animation_speed:
+                    self.animation_count = 0
+                    self.index += 1
+                    self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], True, False)
 
-        self.vel_y += 1
-        if self.vel_y > 10:
-            self.vel_y = 10
-        new_y += self.vel_y
+            self.vel_y += 1
+            if self.vel_y > 10:
+                self.vel_y = 10
+            new_y += self.vel_y
 
-        for tile in world.tile_list:
-            if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height):
-                new_x = 0
+            for tile in world.tile_list:
+                if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height):
+                    new_x = 0
 
-            if tile[1].colliderect(self.rect.x, self.rect.y + new_y, self.width, self.height):
-                if self.jumped_count == 2:
-                    self.jumped_count = 0
+                if tile[1].colliderect(self.rect.x, self.rect.y + new_y, self.width, self.height):
+                    if self.jumped_count == 2:
+                        self.jumped_count = 0
 
-                if self.vel_y < 0:
-                    new_y = tile[1].bottom - self.rect.top
-                    self.vel_y = 0
-                elif self.vel_y >= 0:
-                    new_y = tile[1].top - self.rect.bottom
-                    self.vel_y = 0
+                    if self.vel_y < 0:
+                        new_y = tile[1].bottom - self.rect.top
+                        self.vel_y = 0
+                    elif self.vel_y >= 0:
+                        new_y = tile[1].top - self.rect.bottom
+                        self.vel_y = 0
 
-        if pygame.sprite.spritecollide(self, enemy_group, False):
-            game_over = -1
-            print('enemy')
-        if pygame.sprite.spritecollide(self, lava_group, False):
-            game_over = -1
-            print('lava')
+            if pygame.sprite.spritecollide(self, enemy_group, False):
+                game_over = -1
+                print('enemy')
+            if pygame.sprite.spritecollide(self, lava_group, False):
+                game_over = -1
+                print('lava')
 
-        self.rect.x += new_x
-        self.rect.y += new_y
+            self.rect.x += new_x
+            self.rect.y += new_y
 
-        if self.rect.bottom > screen_height:
-            self.rect.bottom = screen_height
+            if self.rect.bottom > screen_height:
+                self.rect.bottom = screen_height
+
+        elif game_over == -1:
+            self.image = self.dead_img
+            if self.rect.y > 30:
+                self.rect.y -= 5
+
 
         screen.blit(self.image, self.rect)
         # pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
@@ -154,6 +169,32 @@ class Lava(pygame.sprite.Sprite):
         self.rect.y = y
 
 
+class Button():
+    def __init__(self, x, y, image):
+        self.image = image
+        self.rect = self.image.get_rect()
+        self.rect.x = x
+        self.rect.y = y
+        self.clicked = False
+
+    def draw(self):
+        action = False
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
+            #print('test')
+            action = True
+            self.clicked = True
+
+        if pygame.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+
+        screen.blit(self.image, self.rect)
+        return action
+
+
+
+
 
 
 world = [
@@ -172,24 +213,26 @@ world = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 3, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 3]
 ]
 
+screen_width = 600
+screen_height = 600
 enemy_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
+start_btn = pygame.image.load('img/start_btn.png')
+restart_img = pygame.image.load('img/restart_btn.png')
 
+restart_button = Button(screen_width // 2 - 50, screen_height // 2 - 100, restart_img)
 if __name__ == '__main__':
     pygame.init()
 
     clock = pygame.time.Clock()
     fraps = 60
-
-    screen_width = 600
-    screen_height = 600
 
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Russian Mario')
@@ -209,12 +252,14 @@ if __name__ == '__main__':
         all_sprites.draw(screen)
         all_sprites.update()
         world.draw()
-
         enemy_group.update()
         enemy_group.draw(screen)
         lava_group.draw(screen)
-
         player.update()
+
+        if game_over == -1:
+            if restart_button.draw():
+                print('test')
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
