@@ -4,21 +4,31 @@ from Tiles import tiles, tiles_name
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, x, y, *group):
+    def __init__(self, x, y, n_player, *group):
         super().__init__(*group)
         self.images_walk = []
         self.index = 0
         self.animation_speed = 10  # Скорость анимации
         self.animation_count = 0  # Счётчик анимации
+        self.n_player = n_player
 
         # Загрузка картинок ходьбы
-        image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
-        image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
+        if self.n_player == 0:
+            image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
+            image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
 
-        image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0001.png')
-        image_walk_2 = pygame.transform.scale(image_walk_2, (60, 60))
-        self.images_walk.append(image_walk_1)
-        self.images_walk.append(image_walk_2)
+            image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0001.png')
+            image_walk_2 = pygame.transform.scale(image_walk_2, (60, 60))
+            self.images_walk.append(image_walk_1)
+            self.images_walk.append(image_walk_2)
+        elif self.n_player == 1:
+            image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0002.png')
+            image_walk_1 = pygame.transform.scale(image_walk_1, (60, 60))
+
+            image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0003.png')
+            image_walk_2 = pygame.transform.scale(image_walk_2, (60, 60))
+            self.images_walk.append(image_walk_1)
+            self.images_walk.append(image_walk_2)
         self.image = self.images_walk[0]
 
         self.rect = self.image.get_rect()
@@ -35,23 +45,34 @@ class Player(pygame.sprite.Sprite):
         new_x = 0
         new_y = 0
         key = pygame.key.get_pressed()
-        if key[pygame.K_UP] and self.jumped is False:
+        k_left = None
+        k_right = None
+        k_up = None
+        if self.n_player == 0:
+            k_left = key[K_LEFT]
+            k_right = key[K_RIGHT]
+            k_up = key[K_UP]
+        elif self.n_player == 1:
+            k_left = key[K_a]
+            k_right = key[K_d]
+            k_up = key[K_w]
+        if k_up and self.jumped is False:
             if self.jumped_count != 2:
                 self.vel_y = -15
                 self.jumped = True
                 self.jumped_count += 1
             else:
                 self.jumped = False
-        if key[pygame.K_UP] is False:
+        if k_up is False:
             self.jumped = False
-        if key[pygame.K_LEFT]:
+        if k_left:
             new_x -= 5
             self.animation_count += 1
             if self.animation_count >= self.animation_speed:
                 self.animation_count = 0
                 self.index += 1
                 self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], False, False)
-        if key[pygame.K_RIGHT]:
+        if k_right:
             new_x += 5
             self.animation_count += 1
             if self.animation_count >= self.animation_speed:
@@ -166,7 +187,8 @@ if __name__ == '__main__':
     # размер одного блока (клеточки)
     tile_size = 30
     all_sprites = pygame.sprite.Group()
-    player = Player(100, screen_height - 130, all_sprites)
+    player_1 = Player(100, screen_height - 130, 0, all_sprites)
+    player_2 = Player(300, screen_height - 130, 1, all_sprites)
     world = World(world)
 
     # enemy_group = pygame.sprite.Group()
@@ -181,7 +203,6 @@ if __name__ == '__main__':
 
         enemy_group.draw(screen)
 
-        player.update()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
