@@ -8,6 +8,10 @@ game_over = 0
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *group):
         super().__init__(*group)
+        self.main(x, y)
+
+
+    def main(self, x, y):
         self.images_walk = []
         self.index = 0
         self.animation_speed = 10  # Скорость анимации
@@ -23,8 +27,8 @@ class Player(pygame.sprite.Sprite):
         self.images_walk.append(image_walk_2)
         self.image = self.images_walk[0]
 
-        self.dead_img = pygame.image.load('img/ghost.png')
-        self.dead_img = pygame.transform.scale(self.dead_img, (40, 40))
+        self.dead_img = pygame.image.load('img/scull.png')
+        self.dead_img = pygame.transform.scale(self.dead_img, (60, 60))
 
         self.rect = self.image.get_rect()
         self.rect.x = x
@@ -35,6 +39,7 @@ class Player(pygame.sprite.Sprite):
 
         self.jumped = False
         self.jumped_count = 0
+
 
     def update(self):
 
@@ -259,7 +264,7 @@ if __name__ == '__main__':
 
         if game_over == -1:
             if restart_button.draw():
-                print('test')
+                Player(100, screen_height - 130, all_sprites)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
