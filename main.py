@@ -4,6 +4,7 @@ from Tiles import tiles, tiles_name
 
 
 game_over = 0
+main_menu = True
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *group):
@@ -231,8 +232,15 @@ enemy_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 start_btn = pygame.image.load('img/start_btn.png')
 restart_img = pygame.image.load('img/restart_btn.png')
+start_img = pygame.image.load('img/start_btn.png')
+exit_img = pygame.image.load('img/exit_btn.png')
+start_img = pygame.transform.scale(start_img, (140, 60))
+exit_img = pygame.transform.scale(exit_img, (140, 60))
 
 restart_button = Button(screen_width // 2 - 50, screen_height // 2 - 100, restart_img)
+start_button = Button(screen_width // 2 - 225, screen_height // 2 - 50, start_img)
+exit_button = Button(screen_width // 2 + 40, screen_height // 2 - 50, exit_img)
+
 if __name__ == '__main__':
     pygame.init()
 
@@ -253,18 +261,24 @@ if __name__ == '__main__':
 
     while run:
         screen.fill(pygame.Color((0, 246, 245)))
-        clock.tick(fraps)
-        all_sprites.draw(screen)
-        all_sprites.update()
-        world.draw()
-        enemy_group.update()
-        enemy_group.draw(screen)
-        lava_group.draw(screen)
-        player.update()
+        if main_menu == True:
+            exit_button.draw()
+            start_button.draw()
+        else:
+            screen.fill(pygame.Color((0, 246, 245)))
+            clock.tick(fraps)
+            all_sprites.draw(screen)
+            all_sprites.update()
+            world.draw()
+            enemy_group.update()
+            enemy_group.draw(screen)
+            lava_group.draw(screen)
+            player.update()
 
-        if game_over == -1:
-            if restart_button.draw():
-                Player(100, screen_height - 130, all_sprites)
+            if game_over == -1:
+                if restart_button.draw():
+                    Player(100, screen_height - 130, all_sprites)
+                    game_over = 0
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
