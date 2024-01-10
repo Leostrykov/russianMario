@@ -32,6 +32,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.images_walk[0]
 
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = x
         self.rect.y = y
         self.width = self.image.get_width()
@@ -112,9 +113,10 @@ class Player(pygame.sprite.Sprite):
                     self.vel_y = 0
 
         # столкновение с врагами и водоёмом, вследствии игрок проигрывает
-        if pygame.sprite.spritecollide(self, enemy_group, False):
-            game_over = -1
-            print('enemy')
+        for enemy in enemy_group:
+            if pygame.sprite.collide_mask(self, enemy):
+                game_over = -1
+                print('enemy')
         if pygame.sprite.spritecollide(self, lava_group, False):
             game_over = -1
             print('lava')
@@ -167,6 +169,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.image.load('img/Tiles/Characters/tile_0015.png')
         self.image = pygame.transform.scale(self.image, (40, 40))
         self.rect = self.image.get_rect()
+        self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = x
         self.rect.y = y
         self.move_direct = 1
