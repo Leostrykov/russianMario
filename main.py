@@ -48,9 +48,11 @@ class Player(pygame.sprite.Sprite):
         new_y = 0
 
         key = pygame.key.get_pressed()
+        # кнопки сохраняются в виде отдельных переменых
         k_left = None
         k_right = None
         k_up = None
+        # Для каждого игрока назначаются определённые кнопки
         if self.n_player == 0:
             k_left = key[K_LEFT]
             k_right = key[K_RIGHT]
@@ -59,6 +61,7 @@ class Player(pygame.sprite.Sprite):
             k_left = key[K_a]
             k_right = key[K_d]
             k_up = key[K_w]
+
         if k_up and self.jumped is False:
             if self.jumped_count != 2:
                 self.vel_y = -15
@@ -82,14 +85,17 @@ class Player(pygame.sprite.Sprite):
                 self.animation_count = 0
                 self.index += 1
                 self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)], True, False)
+
         if self.index >= len(self.images_walk):
             self.index = 0
 
+        # Свободное падение
         self.vel_y += 1
         if self.vel_y > 10:
             self.vel_y = 10
         new_y += self.vel_y
 
+        # проверки столкновений (коллизия)
         for tile in world.tile_list:
             if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height):
                 new_x = 0
@@ -105,6 +111,7 @@ class Player(pygame.sprite.Sprite):
                     new_y = tile[1].top - self.rect.bottom
                     self.vel_y = 0
 
+        # столкновение с врагами и водоёмом, вследствии игрок проигрывает
         if pygame.sprite.spritecollide(self, enemy_group, False):
             game_over = -1
             print('enemy')
@@ -119,6 +126,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.bottom = screen_height
 
         screen.blit(self.image, self.rect)
+        # Нужен для показа коллизий
         # pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
 
 
@@ -136,6 +144,7 @@ class World:
                     rect.y = row_count * tile_size
                     tile = (img, rect)
                     self.tile_list.append(tile)
+                # Сохранение водоёмов и врагов в отдельные классы
                 if tile == 4:
                     enemy = Enemy(count * tile_size, row_count * tile_size - 10)
                     enemy_group.add(enemy)
@@ -148,6 +157,7 @@ class World:
     def draw(self):
         for tile in self.tile_list:
             screen.blit(tile[0], tile[1])
+            # Нужен для показа коллизий
             # pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
 
 
@@ -180,29 +190,33 @@ class Lava(pygame.sprite.Sprite):
         self.rect.y = y
 
 
-world = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4, 0, 0, 4, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 3, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 2, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 6, 6, 6, 2, 2, 2, 2, 2, 3]
-]
+# фукция для сохранения уровня в виде txt файла
+def save_level_in_file(level, file_name):
+    file = open(file_name, 'w', encoding='utf8')
+    for row in level:
+        line = ''
+        for i in row:
+            line += str(i)
+        file.write(line + '\n')
+    file.close()
 
+
+# функция загрузки уровня из txt уровня
+def load_level_from_file(level, file_name):
+    file = open(file_name, 'r', encoding='utf8')
+    for line in file.readlines():
+        one_piece = []
+        for i in line.rstrip():
+            if i.isdigit():
+                one_piece.append(int(i))
+            else:
+                one_piece.append(i)
+        level.append(one_piece)
+
+
+world = []
+
+load_level_from_file(world, 'level_0.txt')
 enemy_group = pygame.sprite.Group()
 lava_group = pygame.sprite.Group()
 
