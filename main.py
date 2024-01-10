@@ -5,6 +5,7 @@ from Tiles import tiles, tiles_name
 
 game_over = 0
 main_menu = True
+action = False
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, *group):
@@ -13,6 +14,9 @@ class Player(pygame.sprite.Sprite):
 
 
     def main(self, x, y):
+
+        global main_menu
+
         self.images_walk = []
         self.index = 0
         self.animation_speed = 10  # Скорость анимации
@@ -184,11 +188,12 @@ class Button():
         self.clicked = False
 
     def draw(self):
-        action = False
+        global action
+
         pos = pygame.mouse.get_pos()
 
-        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1 and self.clicked == False:
-            #print('test')
+        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1 and self.clicked is False:
+            print('test')
             action = True
             self.clicked = True
 
@@ -241,6 +246,12 @@ restart_button = Button(screen_width // 2 - 50, screen_height // 2 - 100, restar
 start_button = Button(screen_width // 2 - 225, screen_height // 2 - 50, start_img)
 exit_button = Button(screen_width // 2 + 40, screen_height // 2 - 50, exit_img)
 
+
+circle_radius = 0
+circle_color = (255, 255, 0)
+draw_circle = False
+mouse_pos = (0, 0)
+
 if __name__ == '__main__':
     pygame.init()
 
@@ -261,9 +272,11 @@ if __name__ == '__main__':
 
     while run:
         screen.fill(pygame.Color((0, 246, 245)))
-        if main_menu == True:
-            exit_button.draw()
+        if main_menu is True:
+            if action is True:
+                main_menu = False
             start_button.draw()
+            exit_button.draw()
         else:
             screen.fill(pygame.Color((0, 246, 245)))
             clock.tick(fraps)
