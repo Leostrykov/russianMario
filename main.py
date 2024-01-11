@@ -1,6 +1,6 @@
 import pygame
 from pygame.locals import *
-from Tiles import tiles, tiles_name
+from Tiles import tiles, backgrounds_styles, backgrounds
 
 
 class Player(pygame.sprite.Sprite):
@@ -139,8 +139,10 @@ class World:
         for row_count, row in enumerate(data):
             col_count = 0
             for count, tile in enumerate(row):
-                if tile - 1 <= len(tiles_name) and tile != 0 and tile != 4 and tile != 6:
-                    img = pygame.transform.scale(tiles[tiles_name[tile - 1]], (tile_size, tile_size))
+                if tile != 0 and tile != 4 and tile != 6 and tile in tiles:
+                    img = None
+                    if tile in tiles:
+                        img = pygame.transform.scale(tiles[tile][1], (tile_size, tile_size))
                     rect = img.get_rect()
                     rect.x = count * tile_size
                     rect.y = row_count * tile_size
@@ -166,8 +168,16 @@ class World:
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.image = pygame.image.load('img/Tiles/Characters/tile_0015.png')
-        self.image = pygame.transform.scale(self.image, (40, 40))
+        self.images_walk = []
+        im1 = pygame.image.load('img/Tiles/Characters/tile_0015.png')
+        self.images_walk.append(pygame.transform.scale(im1, (40, 40)))
+        im2 = pygame.image.load('img/Tiles/Characters/tile_0016.png')
+        self.images_walk.append(pygame.transform.scale(im2, (40, 40)))
+        self.index = 0
+        self.animation_speed = 10  # Скорость анимации
+        self.animation_count = 0  # Счётчик анимации
+
+        self.image = self.images_walk[0]
         self.rect = self.image.get_rect()
         self.mask = pygame.mask.from_surface(self.image)
         self.rect.x = x
@@ -178,6 +188,14 @@ class Enemy(pygame.sprite.Sprite):
     def update(self):
         self.rect.x += self.move_direct
         self.counter += 1
+        self.animation_count += 1
+        if self.animation_count >= self.animation_speed:
+            if self.index == 1:
+                self.index = 0
+            else:
+                self.index += 1
+            self.animation_count = 0
+            self.image = self.images_walk[self.index]
         if abs(self.counter) > 30:
             self.move_direct *= -1
             self.counter *= -1
