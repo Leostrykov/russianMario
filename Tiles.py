@@ -2,11 +2,12 @@ import pygame
 
 # список объектов мира
 tiles = {
-    1: ['ground_start', pygame.image.load('img/Tiles/tile_0001.png')], #1
-    2: ['ground_center', pygame.image.load('img/Tiles/tile_0002.png')], #2
-    3: ['ground_end', pygame.image.load('img/Tiles/tile_0003.png')],   #3
-    5: ['ground_underground', pygame.image.load('img/Tiles/tile_0006.png')], #5
-    6: ['water', pygame.image.load('img/Tiles/tile_0053.png')], #6
+    1: ['ground_start', pygame.image.load('img/Tiles/tile_0001.png')],
+    2: ['ground_center', pygame.image.load('img/Tiles/tile_0002.png')],
+    3: ['ground_end', pygame.image.load('img/Tiles/tile_0003.png')],
+    5: ['ground_underground', pygame.image.load('img/Tiles/tile_0006.png')],
+    6: ['water', pygame.image.load('img/Tiles/tile_0053.png')],
+    7: ['coin', pygame.image.load('img/Tiles/tile_0151.png')]
 }
 
 backgrounds = {
@@ -21,5 +22,6 @@ backgrounds_styles = {
                [1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 }
+
 # получение списка ключей словаря tiles
 tiles_name = list(tiles.keys())
