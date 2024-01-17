@@ -6,6 +6,31 @@
   <component name="ChangeListManager">
     <list default="true" id="d269af10-fc52-47eb-8eb5-91808ce5a114" name="Changes" comment="nkxzq рабочая ночь завершена :0">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tiles_not.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tiles_not2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature_1.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature_3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature_@.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/feature_keys.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/kek_test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_le.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/main_nout.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/remove_bg.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test10.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test11.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test12.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test2.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test3.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test4.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test5.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test6.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test7.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test8.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test9.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_11.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/ties.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,12 +46,12 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "xstaf"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;xstaf&quot;
   }
-}]]></component>
+}</component>
   <component name="GithubPullRequestsUISettings">
     <option name="selectedUrlAndAccountId">
       <UrlAndAccount>
@@ -38,24 +63,25 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2b6JXU4cho8nFE5euHWFCOtK39r" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.Tiles.executor": "Run",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Rebasing test__branch",
-    "last_opened_file_path": "C:/Users/Egor/PycharmProjects/russianMario/sound"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.Tiles.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;test__branch2&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Egor/PycharmProjects/russianMario/sound&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Egor\PycharmProjects\russianMario\sound" />
@@ -142,6 +168,17 @@
     </task>
     <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="nkxzq рабочая ночь завершена :0" />
