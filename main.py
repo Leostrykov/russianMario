@@ -69,6 +69,8 @@ if __name__ == '__main__':
                 elif update == 'close':
                     is_game = False
                     run = False
+                elif update == 'game_over':
+                    is_game = False
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         is_game = False

@@ -23,6 +23,7 @@ def draw_text(text, font, text_col, x, y, screen):
     screen.blit(img, (x, y))
 
 
+# фукция для сохранения уровня в виде txt файла
 def save_level_in_file(level, file_name):
     file = open(file_name, 'w', encoding='utf8')
     for row in level:
@@ -74,7 +75,6 @@ class Game:
         Player(300, self.screen.get_height() - 130, 1, self.screen,  self.players)
         self.world = World(self.world_list, self.screen, self.tile_size, self)
 
-    # фукция для сохранения уровня в виде txt файла
     def draw(self):
         self.screen.fill(pygame.Color((0, 246, 245)))
         self.clock.tick(self.fraps)
@@ -92,12 +92,13 @@ class Game:
 
         if self.game_over == -1:
             if self.restart_button.draw() and self.restart_button.clicked:
-                self.players.empty()
-                Player(100, self.screen.get_height() - 130, 0, self.screen, self.players)
-                Player(300, self.screen.get_height() - 130, 1, self.screen, self.players)
-                self.game_over = 0
-                self.score = 0
-                print(self.score)
+                # self.players.empty()
+                # Player(100, self.screen.get_height() - 130, 0, self.screen, self.players)
+                # Player(300, self.screen.get_height() - 130, 1, self.screen, self.players)
+                # self.game_over = 0
+                # self.score = 0
+                # print(self.score)
+                return 'game_over'
         if self.game_over == 1:
             return 'next_level'
 
