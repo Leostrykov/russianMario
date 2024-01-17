@@ -5,6 +5,9 @@ from classes.world import World
 from classes.coin import Coin
 from classes.button import Button
 from classes.fish import Fish
+from classes.key import Key
+from classes.thorns import Thorns
+from classes.sounds import *
 
 
 # функция загрузки уровня из txt уровня
@@ -50,6 +53,9 @@ class Game:
         self.end_game_group = pygame.sprite.Group()
         self.non_material_objects = pygame.sprite.Group()
         self.fish_group = pygame.sprite.Group()
+        self.key_group = pygame.sprite.Group()
+        self.thorns_group = pygame.sprite.Group()
+        self.diamonds_group = pygame.sprite.Group()
 
         self.tile_size = 30
 
@@ -65,6 +71,8 @@ class Game:
 
         # шрифты
         self.font_score = pygame.font.SysFont('counter', 30)
+        self.font_key_score = pygame.font.SysFont('key_counter', 30)
+        self.font_hint = pygame.font.SysFont('hint', 20)
 
         self.clock = pygame.time.Clock()
         self.fraps = 60
@@ -73,6 +81,10 @@ class Game:
         self.tile_size = 30
         self.game_over = 0
         self.score = 0
+        self.key_score = 0
+        self.hint_bool = False
+        self.key_bool = False
+        self.key_count_invis = 0
 
         self.players = pygame.sprite.Group()
         Player(100, self.screen.get_height() - 130, 0, self.screen, self.players)
@@ -92,6 +104,8 @@ class Game:
             Fish(randint(0, 900), self.tile_size, self.fish_group)
 
         white = (255, 255, 255)
+        red = (255, 0, 0)
+        green = (0, 128, 0)
 
         draw_text('X' + str(self.score), self.font_score, white, self.tile_size, 8, self.screen)
         self.enemy_group.draw(self.screen)
@@ -99,6 +113,9 @@ class Game:
         self.coin_group.draw(self.screen)
         self.end_game_group.draw(self.screen)
         self.fish_group.draw(self.screen)
+        self.diamonds_group.draw(self.screen)
+        self.thorns_group.draw(self.screen)
+        self.key_group.draw(self.screen)
 
         if self.game_over == -1:
             if self.restart_button.draw() and self.restart_button.clicked:

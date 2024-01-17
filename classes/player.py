@@ -15,18 +15,18 @@ class Player(pygame.sprite.Sprite):
         # Загрузка картинок ходьбы
         if self.n_player == 0:
             image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0000.png')
-            image_walk_1 = pygame.transform.scale(image_walk_1, (40, 40))
+            image_walk_1 = pygame.transform.scale(image_walk_1, (50, 50))
 
             image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0001.png')
-            image_walk_2 = pygame.transform.scale(image_walk_2, (40, 40))
+            image_walk_2 = pygame.transform.scale(image_walk_2, (50, 50))
             self.images_walk.append(image_walk_1)
             self.images_walk.append(image_walk_2)
         elif self.n_player == 1:
             image_walk_1 = pygame.image.load('img/Tiles/Characters/tile_0002.png')
-            image_walk_1 = pygame.transform.scale(image_walk_1, (40, 40))
+            image_walk_1 = pygame.transform.scale(image_walk_1, (50, 50))
 
             image_walk_2 = pygame.image.load('img/Tiles/Characters/tile_0003.png')
-            image_walk_2 = pygame.transform.scale(image_walk_2, (40, 40))
+            image_walk_2 = pygame.transform.scale(image_walk_2, (50, 50))
             self.images_walk.append(image_walk_1)
             self.images_walk.append(image_walk_2)
         self.image = self.images_walk[0]
@@ -127,19 +127,49 @@ class Player(pygame.sprite.Sprite):
                     game_session.game_over = -1
                     game_over_sound.play()
 
+            #if pygame.sprite.spritecollide(self, game_session.thorns_group, False):
+            for thorn in game_session.thorns_group:
+                if pygame.sprite.collide_mask(self, thorn):
+                    game_session.game_over = -1
+                    game_over_sound.play()
+                    print('thorn')
+
+
             if pygame.sprite.spritecollide(self, game_session.coin_group, True):
                 game_session.score += 1
                 coin_sound.play()
                 print('coin')
 
-            if pygame.sprite.spritecollide(self, game_session.end_game_group, False):
-                game_session.game_over = 1
+            if pygame.sprite.spritecollide(self, game_session.diamonds_group, True):
+                game_session.score += 10
+                diamond_sound.play()
+                print('coin')
+            if game_session.key_bool:
+                if pygame.sprite.spritecollide(self, game_session.end_game_group, False):
+                    game_session.game_over = 1
+            else:
+                if pygame.sprite.spritecollide(self, game_session.end_game_group, False):
+                    game_session.hint_bool = True
+                else:
+                    game_session.hint_bool = False
+
+            if pygame.sprite.spritecollide(self, game_session.key_group, True):
+                game_session.key_score += 1
+                game_session.key_count_invis += 1
+                coin_sound.play()
+                print('key')
 
             self.rect.x += new_x
             self.rect.y += new_y
 
             if self.rect.bottom > self.screen.get_height():
                 self.rect.bottom = self.screen.get_height()
+
+            #if self.rect.right > self.screen.get_width():
+                #self.rect.right = self.screen.get_width
+
+            #if self.rect.left < self.screen.get_width():
+                #self.rect.left = self.screen.get_width
 
         elif game_session.game_over == -1:
             self.image = self.dead_img
