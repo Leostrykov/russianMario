@@ -62,7 +62,7 @@ if __name__ == '__main__':
             current_level = Game(f'level_{select_level}.txt', screen)
             is_game = True
             clock = pygame.time.Clock()
-            random_interval = randint(5, 20)
+            random_interval = randint(50, 100)
 
             while is_game:
                 fish = False
@@ -70,7 +70,7 @@ if __name__ == '__main__':
                     random_interval -= 1
                 else:
                     fish = True
-                    random_interval = randint(5, 20)
+                    random_interval = randint(50, 100)
                 update = current_level.draw(fish)
                 if update == 'next_level':
                     select_level += 1

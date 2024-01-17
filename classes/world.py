@@ -23,7 +23,7 @@ class World:
                     rect = img.get_rect()
                     rect.x = count * tile_size
                     rect.y = row_count * tile_size
-                    tile = (img, rect)
+                    tile = (img, rect, tiles[tile][2])
                     self.tile_list.append(tile)
                 # Сохранение водоёмов и врагов в отдельные классы
                 if tile == 4:

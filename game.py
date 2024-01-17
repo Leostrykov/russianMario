@@ -108,6 +108,17 @@ class Game:
         green = (0, 128, 0)
 
         draw_text('X' + str(self.score), self.font_score, white, self.tile_size, 8, self.screen)
+        if self.key_bool:
+            draw_text(f'{self.key_score}/3', self.font_key_score, green, self.tile_size + 840, 490, self.screen)
+        else:
+            draw_text(f'{self.key_score}/3', self.font_key_score, red, self.tile_size + 840, 490, self.screen)
+        if self.key_count_invis == 3:
+            completed_sound.play()
+            self.key_bool = True
+            self.key_count_invis = 0
+        if self.key_score < 3 and self.hint_bool:
+            print('hint')
+            draw_text(f'Сначала собери ключи', self.font_hint, red, self.tile_size + 400, 8, self.screen)
         self.enemy_group.draw(self.screen)
         self.lava_group.draw(self.screen)
         self.coin_group.draw(self.screen)
