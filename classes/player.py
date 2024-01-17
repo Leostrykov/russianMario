@@ -143,4 +143,4 @@ class Player(pygame.sprite.Sprite):
 
         self.screen.blit(self.image, self.rect)
         # Нужен для показа коллизий
-        # pygame.draw.rect(screen, (255, 255, 255), self.rect, 2)
+        # pygame.draw.rect(self.screen, (255, 255, 255), self.rect, 2)

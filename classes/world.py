@@ -29,7 +29,8 @@ class World:
                     lava = Lava(count * tile_size, row_count * tile_size, tile_size)
                     game_session.lava_group.add(lava)
                 if tile == 7:
-                    coin = Coin(count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2))
+                    coin = Coin(count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2),
+                                tile_size)
                     game_session.coin_group.add(coin)
                 if tile == 8:
                     end = NextLevel(count * tile_size + (tile_size // 2), row_count * tile_size + (tile_size // 2),
@@ -40,5 +41,5 @@ class World:
         for tile in self.tile_list:
             self.screen.blit(tile[0], tile[1])
             # Нужен для показа коллизий
-            # pygame.draw.rect(screen, (255, 255, 255), tile[1], 2)
+            # pygame.draw.rect(self.screen, (255, 255, 255), tile[1], 2)
 

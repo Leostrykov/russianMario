@@ -52,7 +52,7 @@ class Game:
         # изображения
         restart_img = pygame.image.load('img/restart_btn.png')
 
-        score_coin = Coin(self.tile_size // 2, self.tile_size // 2)
+        score_coin = Coin(self.tile_size // 2, self.tile_size // 2, self.tile_size)
         self.coin_group.add(score_coin)
 
         # кнопки
@@ -92,12 +92,6 @@ class Game:
 
         if self.game_over == -1:
             if self.restart_button.draw() and self.restart_button.clicked:
-                # self.players.empty()
-                # Player(100, self.screen.get_height() - 130, 0, self.screen, self.players)
-                # Player(300, self.screen.get_height() - 130, 1, self.screen, self.players)
-                # self.game_over = 0
-                # self.score = 0
-                # print(self.score)
                 return 'game_over'
         if self.game_over == 1:
             return 'next_level'
