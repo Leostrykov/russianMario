@@ -20,7 +20,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Russian Mario')
 
-    select_level = 1
+    select_level = 0
 
     start_btn = pygame.image.load('img/start_btn.png')
     start_img = pygame.image.load('img/start_btn.png')
