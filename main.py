@@ -1,8 +1,9 @@
 import pygame
+from random import randint
 from game import Game
 from classes.button import Button
 
-screen_width = 600
+screen_width = 900
 screen_height = 600
 
 
@@ -59,10 +60,18 @@ if __name__ == '__main__':
                     run = False
         else:
             current_level = Game(f'level_{select_level}.txt', screen)
-            print(current_level)
             is_game = True
+            clock = pygame.time.Clock()
+            random_interval = randint(5, 20)
+
             while is_game:
-                update = current_level.draw()
+                fish = False
+                if random_interval > 0:
+                    random_interval -= 1
+                else:
+                    fish = True
+                    random_interval = randint(5, 20)
+                update = current_level.draw(fish)
                 if update == 'next_level':
                     select_level += 1
                     is_game = False

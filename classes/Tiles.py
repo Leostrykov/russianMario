@@ -2,13 +2,15 @@ import pygame
 
 # список объектов мира
 tiles = {
-    1: ['ground_start', pygame.image.load('img/Tiles/tile_0001.png')],
-    2: ['ground_center', pygame.image.load('img/Tiles/tile_0002.png')],
-    3: ['ground_end', pygame.image.load('img/Tiles/tile_0003.png')],
-    5: ['ground_underground', pygame.image.load('img/Tiles/tile_0006.png')],
-    6: ['water', pygame.image.load('img/Tiles/tile_0053.png')],
-    7: ['coin', pygame.image.load('img/Tiles/tile_0151.png')],
-    8: ['end_game', pygame.image.load('img/Tiles/tile_0112.png')]
+    1: ['ground_start', pygame.image.load('../img/Tiles/tile_0001.png'), True],
+    2: ['ground_center', pygame.image.load('../img/Tiles/tile_0002.png'), True],
+    3: ['ground_end', pygame.image.load('../img/Tiles/tile_0003.png'), True],
+    5: ['ground_underground', pygame.image.load('../img/Tiles/tile_0006.png'), True],
+    6: ['water', pygame.image.load('../img/Tiles/tile_0053.png'), False],
+    7: ['coin', pygame.image.load('../img/Tiles/tile_0151.png'), False],
+    8: ['end_game', pygame.image.load('../img/Tiles/tile_0112.png'), False],
+    9: ['indicator', pygame.image.load('../img/Tiles/tile_0085.png'), False],
+    'f': ['fish', pygame.image.load('../img/Tiles/Characters/tile_0013.png'), False]
 }
 
 backgrounds = {

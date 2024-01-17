@@ -1,8 +1,10 @@
 import pygame
+from random import randint
 from classes.player import Player
 from classes.world import World
 from classes.coin import Coin
 from classes.button import Button
+from classes.fish import Fish
 
 
 # функция загрузки уровня из txt уровня
@@ -46,6 +48,8 @@ class Game:
         self.lava_group = pygame.sprite.Group()
         self.coin_group = pygame.sprite.Group()
         self.end_game_group = pygame.sprite.Group()
+        self.non_material_objects = pygame.sprite.Group()
+        self.fish_group = pygame.sprite.Group()
 
         self.tile_size = 30
 
@@ -75,12 +79,17 @@ class Game:
         Player(300, self.screen.get_height() - 130, 1, self.screen,  self.players)
         self.world = World(self.world_list, self.screen, self.tile_size, self)
 
-    def draw(self):
+    def draw(self, fish):
         self.screen.fill(pygame.Color((0, 246, 245)))
         self.clock.tick(self.fraps)
-        self.players.update(self)
         self.world.draw()
+        self.players.update(self)
         self.enemy_group.update()
+        self.end_game_group.update()
+        self.coin_group.update()
+        self.fish_group.update()
+        if fish is True:
+            Fish(randint(0, 900), self.tile_size, self.fish_group)
 
         white = (255, 255, 255)
 
@@ -89,6 +98,7 @@ class Game:
         self.lava_group.draw(self.screen)
         self.coin_group.draw(self.screen)
         self.end_game_group.draw(self.screen)
+        self.fish_group.draw(self.screen)
 
         if self.game_over == -1:
             if self.restart_button.draw() and self.restart_button.clicked:
