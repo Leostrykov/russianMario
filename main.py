@@ -28,7 +28,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Russian Mario')
 
-    select_level = 1
+    select_level = 0
     score = 0
     end_game = False
     start_time = None
