@@ -134,7 +134,6 @@ class Player(pygame.sprite.Sprite):
                     game_over_sound.play()
                     print('thorn')
 
-
             if pygame.sprite.spritecollide(self, game_session.coin_group, True):
                 game_session.score += 1
                 coin_sound.play()

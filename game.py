@@ -41,7 +41,7 @@ def save_level_in_file(level, file_name):
 
 # класс игры
 class Game:
-    def __init__(self, level_file, screen):
+    def __init__(self, level_file, screen, pl_coords):
         print('welcome')
         self.world_list = []
         self.screen = screen
@@ -87,8 +87,8 @@ class Game:
         self.key_count_invis = 0
 
         self.players = pygame.sprite.Group()
-        Player(100, self.screen.get_height() - 130, 0, self.screen, self.players)
-        Player(300, self.screen.get_height() - 130, 1, self.screen,  self.players)
+        Player(pl_coords[0][0], pl_coords[0][1], 0, self.screen, self.players)
+        Player(pl_coords[1][0], pl_coords[1][1], 1, self.screen,  self.players)
         self.world = World(self.world_list, self.screen, self.tile_size, self)
 
     def draw(self, fish):
@@ -133,7 +133,6 @@ class Game:
                 return 'game_over'
         if self.game_over == 1:
             return 'next_level'
-
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return 'close'
