@@ -5,8 +5,10 @@ from game import Game
 from classes.button import Button
 from classes.sounds import completed_sound
 
+# размер окна
 screen_width = 900
 screen_height = 600
+# конфигурации уровней
 levels = [[0, ((50, 470), (100, 470)), False], [0, ((50, 470), (100, 470)), True]]
 db = sqlite3.connect('game.db')
 cur = db.cursor()
@@ -26,7 +28,7 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Russian Mario')
 
-    select_level = 0
+    select_level = 1
     score = 0
     end_game = False
     start_time = None
@@ -47,6 +49,7 @@ if __name__ == '__main__':
     font_start = pygame.font.Font('fonts\Pixeloid_font_0_4\TrueType (.ttf)/PixeloidSans.ttf', 70)
     font_dev = pygame.font.Font('fonts\Pixeloid_font_0_4\TrueType (.ttf)/PixeloidSans.ttf', 20)
     bold_font = pygame.font.Font('fonts\Pixeloid_font_0_4\TrueType (.ttf)/PixeloidSans-Bold.ttf', 30)
+    # Цвета
     white = (255, 255, 255)
     black = (0, 0, 0)
     blue = (0, 0, 255)
@@ -56,6 +59,7 @@ if __name__ == '__main__':
     run = True
     while run:
         if main_menu is True:
+            # меню
             screen.fill(pygame.Color((0, 246, 245)))
             screen.blit(logo_img, (screen_width // 2 - 220, screen_height // 2 - 200))
             draw_text('by:', font_dev, white, screen_width - 180, screen_height // 2 + 180)
@@ -70,6 +74,7 @@ if __name__ == '__main__':
                 main_menu = False
         else:
             if end_game is False:
+                # запуск игры
                 current_level = Game(f'level_{select_level}.txt', screen, levels[select_level][1])
                 is_game = True
                 clock = pygame.time.Clock()
@@ -104,18 +109,20 @@ if __name__ == '__main__':
                             run = False
                     pygame.display.update()
             else:
+                # финальное окно
                 score_aft = cur.execute('SELECT MIN(time), MAX(score) FROM score_table').fetchone()
 
                 screen.fill(pygame.Color((0, 246, 245)))
 
-                draw_text('Нынешний счёт:', bold_font, white, screen_width // 2 - 400, screen_height // 2 - 50)
+                draw_text('Нынешний счёт:', bold_font, black, screen_width // 2 - 400, screen_height // 2 - 50)
                 new_reccord = False
+
                 # лучший результат
-                draw_text('Лучшие результаты:', bold_font, white, screen_width // 2 + 50, screen_height // 2 - 50)
-                draw_text('Ваш счёт:' + str(score_aft[1]), font_dev, white,
+                draw_text('Лучшие результаты:', bold_font, black, screen_width // 2 + 50, screen_height // 2 - 50)
+                draw_text('Ваш счёт:' + str(score_aft[1]), font_dev, black,
                           screen_width // 2 + 50, screen_height // 2 - 20)
                 draw_text('Время:' + str((score_aft[0] // 1000) // 60) + ':' + str((score_aft[0] // 1000) % 60),
-                          font_dev, white, screen_width // 2 + 50, screen_height // 2 + 20)
+                          font_dev, black, screen_width // 2 + 50, screen_height // 2 + 20)
 
                 # нынешний результат
                 if time_of_session < score_aft[0]:
@@ -124,14 +131,14 @@ if __name__ == '__main__':
                     new_reccord = True
                 else:
                     draw_text('Время:' + str((time_of_session // 1000) // 60) + ':' +
-                              str((time_of_session // 1000) % 60), font_dev, white,
+                              str((time_of_session // 1000) % 60), font_dev, black,
                                 screen_width // 2 - 400, screen_height // 2 + 20)
                 if score > score_aft[1]:
                     draw_text('Ваш счёт:' + str(score), font_dev, red, screen_width // 2 - 400,
                               screen_height // 2 - 20)
                     new_reccord = True
                 else:
-                    draw_text('Ваш счёт:' + str(score), font_dev, white, screen_width // 2 - 400,
+                    draw_text('Ваш счёт:' + str(score), font_dev, black, screen_width // 2 - 400,
                               screen_height // 2 - 20)
                 if new_reccord:
                     draw_text('Новый рекорд', bold_font, red, screen_width // 2 - 400,

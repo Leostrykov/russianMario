@@ -164,11 +164,11 @@ class Player(pygame.sprite.Sprite):
             if self.rect.bottom > self.screen.get_height():
                 self.rect.bottom = self.screen.get_height()
 
-            #if self.rect.right > self.screen.get_width():
-                #self.rect.right = self.screen.get_width
+            # if self.rect.right > self.screen.get_width():
+                # self.rect.right = self.screen.get_width
 
-            #if self.rect.left < self.screen.get_width():
-                #self.rect.left = self.screen.get_width
+            # if self.rect.left < self.screen.get_width():
+                # self.rect.left = self.screen.get_width
 
         elif game_session.game_over == -1:
             self.image = self.dead_img
