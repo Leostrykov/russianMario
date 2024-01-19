@@ -1,6 +1,7 @@
 import pygame
 
 
+# класс кнопок
 class Button:
     def __init__(self, x, y, image, screen):
         self.screen = screen
@@ -20,4 +21,5 @@ class Button:
             self.clicked = False
 
         self.screen.blit(self.image, self.rect)
+        # возвращяет нажали на неё или нет
         return self.clicked

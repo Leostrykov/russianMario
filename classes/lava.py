@@ -1,6 +1,7 @@
 import pygame
 
 
+# класс лавы
 class Lava(pygame.sprite.Sprite):
     def __init__(self, x, y, tile_size):
         pygame.sprite.Sprite.__init__(self)

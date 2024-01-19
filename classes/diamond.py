@@ -1,6 +1,7 @@
 import pygame
 
 
+# класс алмазов, в отличии от монеток они дают больше баллов, но и добраться до них сложнее
 class Diamond(pygame.sprite.Sprite):
     def __init__(self, x, y, tile_size):
         pygame.sprite.Sprite.__init__(self)

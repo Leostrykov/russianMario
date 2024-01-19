@@ -1,6 +1,7 @@
 import pygame
 
 
+# класс монеток
 class Coin(pygame.sprite.Sprite):
     def __init__(self, x, y, tile_size):
         pygame.sprite.Sprite.__init__(self)

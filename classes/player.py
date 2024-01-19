@@ -2,6 +2,7 @@ from pygame.locals import *
 from classes.sounds import *
 
 
+# класс игрока
 class Player(pygame.sprite.Sprite):
     def __init__(self, x, y, n_player, screen, *group):
         super().__init__(*group)
@@ -9,7 +10,7 @@ class Player(pygame.sprite.Sprite):
         self.images_walk = []
         self.index = 0
         self.animation_speed = 10  # Скорость анимации
-        self.animation_count = 0  # Счётчик анимации
+        self.animation_count = 0  # Счётчик кадра
         self.n_player = n_player
 
         # Загрузка картинок ходьбы
@@ -31,6 +32,7 @@ class Player(pygame.sprite.Sprite):
             self.images_walk.append(image_walk_2)
         self.image = self.images_walk[0]
 
+        # картинка при проигрыше
         self.dead_img = pygame.image.load('img/scull.png')
         self.dead_img = pygame.transform.scale(self.dead_img, (40, 40))
 
@@ -63,6 +65,8 @@ class Player(pygame.sprite.Sprite):
                 k_left = key[K_a]
                 k_right = key[K_d]
                 k_up = key[K_w]
+
+            # прыжки
             if k_up and self.jumped is False:
                 if self.jumped_count != 2:
                     jump_sound.play()
@@ -73,6 +77,8 @@ class Player(pygame.sprite.Sprite):
                     self.jumped = False
             if k_up is False:
                 self.jumped = False
+
+            # ходьба налево
             if k_left:
                 new_x -= 5
                 self.animation_count += 1
@@ -81,6 +87,7 @@ class Player(pygame.sprite.Sprite):
                     self.index += 1
                     self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)],
                                                        False, False)
+            # ходьба направо
             if k_right:
                 new_x += 5
                 self.animation_count += 1
@@ -89,7 +96,7 @@ class Player(pygame.sprite.Sprite):
                     self.index += 1
                     self.image = pygame.transform.flip(self.images_walk[self.index % len(self.images_walk)],
                                                        True, False)
-
+            # свободное падение
             self.vel_y += 1
             if self.vel_y > 10:
                 self.vel_y = 10
@@ -100,7 +107,7 @@ class Player(pygame.sprite.Sprite):
                 if tile[1].colliderect(self.rect.x + new_x, self.rect.y, self.width, self.height) and tile[2] is True:
                     new_x = 0
 
-                if tile[1].colliderect(self.rect.x, self.rect.y + new_y, self.width, self.height)  and tile[2] is True:
+                if tile[1].colliderect(self.rect.x, self.rect.y + new_y, self.width, self.height) and tile[2] is True:
                     if self.jumped_count == 2:
                         self.jumped_count = 0
 
@@ -111,38 +118,40 @@ class Player(pygame.sprite.Sprite):
                         new_y = tile[1].top - self.rect.bottom
                         self.vel_y = 0
 
+            # столкновение с врагами
             for enemy in game_session.enemy_group:
                 if pygame.sprite.collide_mask(self, enemy):
                     game_session.game_over = -1
                     game_over_sound.play()
-                    print('enemy')
 
+            # столкновение с лавой
             if pygame.sprite.spritecollide(self, game_session.lava_group, False):
                 game_session.game_over = -1
                 game_over_sound.play()
-                print('lava')
 
+            # столкновение р рыбой
             for fish in game_session.fish_group:
                 if pygame.sprite.collide_mask(self, fish):
                     game_session.game_over = -1
                     game_over_sound.play()
 
-            #if pygame.sprite.spritecollide(self, game_session.thorns_group, False):
+            # столкновение с ширами
             for thorn in game_session.thorns_group:
                 if pygame.sprite.collide_mask(self, thorn):
                     game_session.game_over = -1
                     game_over_sound.play()
-                    print('thorn')
 
+            # столкновение с монетками
             if pygame.sprite.spritecollide(self, game_session.coin_group, True):
                 game_session.score += 1
                 coin_sound.play()
-                print('coin')
 
+            # столкновение с алмазом
             if pygame.sprite.spritecollide(self, game_session.diamonds_group, True):
                 game_session.score += 10
                 diamond_sound.play()
-                print('coin')
+
+            # окончание игры, столкновение с флажком
             if game_session.key_bool:
                 if pygame.sprite.spritecollide(self, game_session.end_game_group, False):
                     game_session.game_over = 1
@@ -151,12 +160,11 @@ class Player(pygame.sprite.Sprite):
                     game_session.hint_bool = True
                 else:
                     game_session.hint_bool = False
-
+            # собирание ключей
             if pygame.sprite.spritecollide(self, game_session.key_group, True):
                 game_session.key_score += 1
                 game_session.key_count_invis += 1
                 coin_sound.play()
-                print('key')
 
             self.rect.x += new_x
             self.rect.y += new_y
@@ -170,6 +178,7 @@ class Player(pygame.sprite.Sprite):
             # if self.rect.left < self.screen.get_width():
                 # self.rect.left = self.screen.get_width
 
+        # game over, показ картинки при проигрыше
         elif game_session.game_over == -1:
             self.image = self.dead_img
             if self.rect.y > 30:

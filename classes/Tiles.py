@@ -2,6 +2,7 @@ import pygame
 
 # список объектов мира
 tiles = {
+    # ключ на карте: ['название', картинка, является ли материальной]
     1: ['ground_start', pygame.image.load('img/Tiles/tile_0001.png'), True],
     2: ['ground_center', pygame.image.load('img/Tiles/tile_0002.png'), True],
     3: ['ground_end', pygame.image.load('img/Tiles/tile_0003.png'), True],
@@ -17,19 +18,6 @@ tiles = {
     't': ['1block', pygame.image.load('img/Tiles/tile_0000.png'), True],
     'y': ['thorn', pygame.image.load('img/Tiles/tile_0068.png'), False],
     'u': ['diamond', pygame.image.load('img/Tiles/tile_0067.png'), False]
-}
-
-backgrounds = {
-    1: pygame.image.load('img/Tiles/Backgrounds/tile_0000.png'),
-    2: pygame.image.load('img/Tiles/Backgrounds/tile_0008.png'),
-    3: pygame.image.load('img/Tiles/Backgrounds/tile_0009.png'),
-    4: pygame.image.load('img/Tiles/Backgrounds/tile_0010.png')
-}
-
-backgrounds_styles = {
-    'forest': [[1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-               [1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-               [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 }
 
 # получение списка ключей словаря tiles

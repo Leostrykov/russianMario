@@ -9,9 +9,18 @@ from classes.sounds import completed_sound
 screen_width = 900
 screen_height = 600
 # конфигурации уровней
+# [id, (коодинаты появляния игроков), флажок включающий рыбок]
 levels = [[0, ((50, 470), (100, 470)), False], [0, ((50, 470), (100, 470)), True]]
 db = sqlite3.connect('game.db')
 cur = db.cursor()
+# время начала игры
+start_time = None
+# время сессии
+time_of_session = None
+# флажок окончания игры
+end_game = False
+# счёт
+score = 0
 
 
 def draw_text(text, font, text_col, x, y):
@@ -28,11 +37,8 @@ if __name__ == '__main__':
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('Russian Mario')
 
-    select_level = 0
-    score = 0
-    end_game = False
-    start_time = None
-    time_of_session = None
+    # выбранный уровень
+    select_level = 1
 
     start_btn = pygame.image.load('img/start_btn.png')
     start_img = pygame.image.load('img/start_btn.png')
@@ -70,6 +76,7 @@ if __name__ == '__main__':
             if exit_button.draw():
                 run = False
             if start_button.draw():
+                # сохранение времени начала игры
                 start_time = pygame.time.get_ticks()
                 main_menu = False
         else:
@@ -87,30 +94,31 @@ if __name__ == '__main__':
                     elif random_interval == 0 and levels[select_level][2]:
                         fish = True
                         random_interval = randint(50, 100)
+                    # обновление экрана
                     update = current_level.draw(fish)
                     if update == 'next_level':
                         if select_level < len(levels) - 1:
-                            score += current_level.score
+                            select_level += 1
                         else:
+                            # вычисление времени игры
                             time_of_session = pygame.time.get_ticks() - start_time
-                            cur.execute(f'INSERT INTO score_table (time, score) VALUES ({time_of_session}, {score})')
-
                             end_game = True
-                        select_level += 1
+                        score += current_level.score
                         is_game = False
+                    # если окно закрылось
                     elif update == 'close':
                         is_game = False
                         run = False
+                    # если игрок проиграл
                     elif update == 'game_over':
                         is_game = False
-                    for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                            is_game = False
-                            run = False
                     pygame.display.update()
             else:
                 # финальное окно
+                # Лучший результат
                 score_aft = cur.execute('SELECT MIN(time), MAX(score) FROM score_table').fetchone()
+                if score_aft[0] is None:
+                    score_aft = [0, 0]
 
                 screen.fill(pygame.Color((0, 246, 245)))
 
@@ -118,11 +126,11 @@ if __name__ == '__main__':
                 new_reccord = False
 
                 # лучший результат
-                draw_text('Лучшие результаты:', bold_font, black, screen_width // 2 + 50, screen_height // 2 - 50)
-                draw_text('Ваш счёт:' + str(score_aft[1]), font_dev, black,
-                          screen_width // 2 + 50, screen_height // 2 - 20)
+                draw_text('Лучшие результаты:', bold_font, black, screen_width // 2 + 40, screen_height // 2 - 50)
+                draw_text('Cчёт:' + str(score_aft[1]), font_dev, black,
+                          screen_width // 2 + 40, screen_height // 2 - 20)
                 draw_text('Время:' + str((score_aft[0] // 1000) // 60) + ':' + str((score_aft[0] // 1000) % 60),
-                          font_dev, black, screen_width // 2 + 50, screen_height // 2 + 20)
+                          font_dev, black, screen_width // 2 + 40, screen_height // 2 + 20)
 
                 # нынешний результат
                 if time_of_session < score_aft[0]:
@@ -132,7 +140,7 @@ if __name__ == '__main__':
                 else:
                     draw_text('Время:' + str((time_of_session // 1000) // 60) + ':' +
                               str((time_of_session // 1000) % 60), font_dev, black,
-                                screen_width // 2 - 400, screen_height // 2 + 20)
+                              screen_width // 2 - 400, screen_height // 2 + 20)
                 if score > score_aft[1]:
                     draw_text('Ваш счёт:' + str(score), font_dev, red, screen_width // 2 - 400,
                               screen_height // 2 - 20)
@@ -150,5 +158,8 @@ if __name__ == '__main__':
                 run = False
         pygame.display.update()
 
+# сохранение результата в бд
+if end_game is True:
+    cur.execute(f'INSERT INTO score_table (time, score) VALUES ({time_of_session}, {score})')
 db.commit()
 pygame.quit()

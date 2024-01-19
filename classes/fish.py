@@ -1,6 +1,7 @@
 import pygame
 
 
+# класс рыбок
 class Fish(pygame.sprite.Sprite):
     def __init__(self, x, tile_size, *group):
         super().__init__(*group)
@@ -29,4 +30,5 @@ class Fish(pygame.sprite.Sprite):
         if self.rect.y > -5:
             self.rect.y -= 5
         else:
+            # если рыбки улутели за верхний край экрана, то они исчезают
             self.kill()
